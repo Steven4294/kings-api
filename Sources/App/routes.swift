@@ -7,7 +7,7 @@ func routes(_ app: Application) throws {
     }
 
     app.get("hello") { req -> String in
-        return "Hello, world!"
+        return "Hello, world 2!"
     }
 
     try app.register(collection: TodoController())
