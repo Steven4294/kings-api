@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-let whales = ["bigpapa", "mike r"]
+let whales = ["bigpapa", "mike r", "ricky g", "eugene l"]
 
 func routes(_ app: Application) throws {
     app.get { req in
@@ -35,7 +35,7 @@ func routes(_ app: Application) throws {
                     if (abs(interval) > 600) { // 600 seconds
                         if (whales.contains(player.id ?? "")) {
                             // we found a whale
-                            let message = "[Whalewatcher] \(player.id ?? "") has sat"
+                            let message = "[Whalewatcher/\(player.club ?? "")] \(player.id ?? "") has sat"
                             sendDiscordMessage(message: message, client: req.client)
 
 
