@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-let whales = ["bigpapa", "mike r", "ricky g", "eugene l"]
+let whales = ["bigpapa", "mike r", "ricky g", "eugene l", "rijraj", "tfive"]
 
 func routes(_ app: Application) throws {
     app.get { req in
@@ -14,14 +14,14 @@ func routes(_ app: Application) throws {
     
     app.post("message") { req -> String in
         let whaleWatcherRequest = try req.content.decode(WhaleWatcherRequest.self)
-        print(whaleWatcherRequest.message)
+
         let nonunique = whaleWatcherRequest.message.split(separator: ",").map { "\($0)" }.map { $0.lowercased() }
             .filter { $0 != "take seat" && $0 != "$" }
        
         let playerNames = Array(Set(nonunique))
         
         let players = playerNames.map { name in
-            return Player(id: name, lastActive: Date(), club: "Kings", waitlist: false)
+            return Player(id: name, lastActive: Date(), club: whaleWatcherRequest.type, waitlist: false)
         }
         print(playerNames)
 //        sendDiscordMessage(message: "test from vapor", client: req.client)
@@ -71,6 +71,7 @@ func sendDiscordMessage(message: String, client: Client) {
 
 struct WhaleWatcherRequest: Content, Decodable {
     let message: String
+    let type: String
 }
 
 extension Player {
