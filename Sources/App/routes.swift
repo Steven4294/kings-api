@@ -24,7 +24,7 @@ func routes(_ app: Application) throws {
             return Player(id: name, lastActive: Date(), club: "Kings", waitlist: false)
         }
         print(playerNames)
-        
+//        sendDiscordMessage(message: "test from vapor", client: req.client)
         players.map { player in
             Player.query(on: req.db)
                 .filter(Player.self, \.$id == player.id ?? "")
@@ -32,12 +32,12 @@ func routes(_ app: Application) throws {
                 .map { oldPlayer in
                     guard let oldPlayer = oldPlayer else { return }
                     let interval = (oldPlayer.lastActive ?? Date()).timeIntervalSince(player.lastActive ?? Date())
-                    if (abs(interval) > 600) { // 60 seconds
+                    if (abs(interval) > 600) { // 600 seconds
                         if (whales.contains(player.id ?? "")) {
                             // we found a whale
                             let message = "[Whalewatcher] \(player.id ?? "") has sat"
-                            
-                            print(">>> \(player.id) \(abs(interval))")
+                            sendDiscordMessage(message: message, client: req.client)
+
 
                         }
 
@@ -52,6 +52,18 @@ func routes(_ app: Application) throws {
     }
 
     try app.register(collection: TodoController())
+}
+
+func sendDiscordMessage(message: String, client: Client) {
+    client.post("https://discord-stakerhub.herokuapp.com/message") { req in
+        // Encode query string to the request URL.
+//        try req.query.encode(["q": "test"])
+
+        // Encode JSON to the request body.
+        try req.content.encode(["message": message])
+    }.map { res in
+        // Handle the response.
+    }
 }
 
 struct WhaleWatcherRequest: Content, Decodable {
