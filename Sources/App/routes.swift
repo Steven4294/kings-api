@@ -25,8 +25,8 @@ func routes(_ app: Application) throws {
         }
         print(playerNames)
 //        sendDiscordMessage(message: "test from vapor", client: req.client)
-        players.map { player in
-            Player.query(on: req.db)
+        let promises = players.map { player in
+            return Player.query(on: req.db)
                 .filter(Player.self, \.$id == player.id ?? "")
                 .first()
                 .map { oldPlayer in
@@ -44,10 +44,13 @@ func routes(_ app: Application) throws {
                     }
                 }
         }
-        _ = players.map { player in
-            player.upsert(on: req.db, eventLoop: req.eventLoop)
-        }
+        EventLoopFuture<Void>.whenAllComplete(promises, on: req.eventLoop).map { result in
+            _ = players.map { player in
+                player.upsert(on: req.db, eventLoop: req.eventLoop)
+            }
 
+        }
+ 
         return "Hello, world 2!"
     }
 
