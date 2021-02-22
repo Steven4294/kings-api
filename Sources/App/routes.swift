@@ -35,8 +35,9 @@ func routes(_ app: Application) throws {
                     if (abs(interval) > 600) { // 600 seconds
                         if (whales.contains(player.id ?? "")) {
                             // we found a whale
+                            let site = player.club?.lowercased() ?? ""
                             let message = "[Whalewatcher/\(player.club ?? "")] \(player.id ?? "") has sat"
-                            sendDiscordMessage(message: message, client: req.client)
+                            sendDiscordMessage(message: message, client: req.client, site: site)
 
 
                         }
@@ -57,8 +58,8 @@ func routes(_ app: Application) throws {
     try app.register(collection: TodoController())
 }
 
-func sendDiscordMessage(message: String, client: Client) {
-    client.post("https://discord-stakerhub.herokuapp.com/message") { req in
+func sendDiscordMessage(message: String, client: Client, site: String) {
+    client.post("https://discord-stakerhub.herokuapp.com/message/\(site)") { req in
         // Encode query string to the request URL.
 //        try req.query.encode(["q": "test"])
 
