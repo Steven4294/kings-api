@@ -15,16 +15,23 @@ func routes(_ app: Application) throws {
     app.post("message") { req -> String in
         let whaleWatcherRequest = try req.content.decode(WhaleWatcherRequest.self)
 
-        let nonunique = whaleWatcherRequest.message.split(separator: ",").map { "\($0)" }.map { $0.lowercased() }
-            .filter { $0 != "take seat" && $0 != "$" }
-       
-        let playerNames = Array(Set(nonunique))
+      
+//        let players = whaleWatcherRequest.players.filter { $0.name != "take seat" && $0.name != "$" }.map { p in
+//
+//            return Player(id: p.name.lowercased(), lastActive: Date(), club: whaleWatcherRequest.type, waitlist: false)
+//        }
         
+        let nonunique = whaleWatcherRequest.players.map { $0.name.lowercased() }.filter { $0 != "take seat" && $0 != "$"  }
+        
+        let playerNames = Array(Set(nonunique))
         let players = playerNames.map { name in
             return Player(id: name, lastActive: Date(), club: whaleWatcherRequest.type, waitlist: false)
         }
-        print(playerNames)
-//        sendDiscordMessage(message: "test from vapor", client: req.client)
+        var dic: [String: WhaleWatcherPlayer] = [:]
+        _ = whaleWatcherRequest.players.map { wP in
+            dic[wP.name.lowercased()] = wP
+        }
+        
         let promises = players.map { player in
             return Player.query(on: req.db)
                 .filter(Player.self, \.$id == player.id ?? "")
@@ -36,7 +43,9 @@ func routes(_ app: Application) throws {
                         if (whales.contains(player.id ?? "")) {
                             // we found a whale
                             let site = player.club?.lowercased() ?? ""
-                            let message = "[Whalewatcher/\(player.club ?? "")] \(player.id ?? "") has sat"
+                            guard let whalewatcher: WhaleWatcherPlayer = dic[player.id ?? ""] else { return }
+                            
+                            let message = "[Whalewatcher/\(player.club ?? "")] \(player.id ?? "") has sat at \(whalewatcher.stakes)"
                             sendDiscordMessage(message: message, client: req.client, site: site)
 
 
@@ -71,8 +80,14 @@ func sendDiscordMessage(message: String, client: Client, site: String) {
 }
 
 struct WhaleWatcherRequest: Content, Decodable {
-    let message: String
+    let players: [WhaleWatcherPlayer]
     let type: String
+}
+
+struct WhaleWatcherPlayer: Content, Decodable {
+    let name: String
+    let table: String
+    let stakes: String
 }
 
 extension Player {
