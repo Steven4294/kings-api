@@ -45,10 +45,10 @@ public func configureMigrations(_ app: Application) {
 public func configureDatabase(_ app: Application) {
     //postgres://uandn1gurdarki:pa43ea882f891e45de849d6c3763d20672102cf8dd2ca25f8fc040a3aeb363fa0@ec2-3-228-49-20.compute-1.amazonaws.com:5432/d2berj9mn7njml
     //
-    let herokuHost = "ec2-18-204-101-137.compute-1.amazonaws.com"
-    let herokuUsername = "syjrqiibgtpetx"
-    let herokuPassword = "d2aee37e4b245940afa506116bcd9c8309d647b97298c69cf4205a300c7c4183"
-    let herokuDatabase = "d9jpcv88iknnqd"
+    let herokuHost = "ec2-54-159-175-113.compute-1.amazonaws.com"
+    let herokuUsername = "ekhzkavqbpluxt"
+    let herokuPassword = "056dfd0361628292a2c98734e7d03dfe990068d9b0439afab4b3c0ef2d79bc05"
+    let herokuDatabase = "d36m4qf1c59v6c"
     
     if (Environment.get("DATABASE_URL") != nil) {
         print("using heroku database")
