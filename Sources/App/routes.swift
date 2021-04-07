@@ -1,7 +1,7 @@
 import Fluent
 import Vapor
 
-let whales = ["bigpapa", "mike r", "ricky g", "eugene l", "rijraj", "tfive", "rick f", "stringerbell", "hotmark777", "joeypizza", "mikec2", "stevedd", "joec", "chriskg"]
+let whales = ["bigpapa", "mike r", "ricky g", "eugene l", "rijraj", "tfive", "rick f", "stringerbell", "hotmark777", "joeypizza", "mikec2", "stevedd", "joec", "chriskg", "joe_m", "tom_l"]
 // ///
 func routes(_ app: Application) throws {
     app.get { req in
